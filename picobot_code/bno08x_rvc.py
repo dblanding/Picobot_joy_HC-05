@@ -1,3 +1,5 @@
+# bno08x_rp2.py
+
 """
 A simple helper library for using the UART-RVC mode of the BNO08x IMUs.
 Provides intuitive access to yaw, pitch, roll, x_accel, y_accel and z_accel

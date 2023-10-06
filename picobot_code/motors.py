@@ -1,9 +1,7 @@
 # motors.py
 
 from machine import Pin, PWM
-
-FULL_SPD = 60_000
-TURN_SPD = 30_000
+from parameters import FULL_SPD, TURN_SPD
 
 # setup pins connected to L298N Motor Drive Controller Board
 ena = PWM(Pin(21))

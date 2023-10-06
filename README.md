@@ -21,15 +21,19 @@
 
 ![Joystick wiring diagram](imgs/joystick-wiring-diagram.png)
 
-## Here's the robot with HC-05 BT module and BNO08x IMU:
+### Here's the robot with HC-05 BT module and BNO08x IMU:
 
 ![Robot](imgs/picobot.jpg)
 
-## And here's the controller: A cheapo 2-axis joystick attached to the top of the box it came in:
+### And here's the controller: A cheapo 2-axis joystick attached to the top of the box it came in:
 
 ![Joystick Controller](imgs/controller.jpg)
 
-## Inside the box is the Pico and HC-06 BT module:
+### Inside the box is the Pico and HC-06 BT module:
 
 ![Inside Controller box](imgs/controller-open.jpg)
 
+## Next, add Odometry: Use wheel encoder data to calculate current pose (x, y, angle)
+* Starting from its **Home** position: pose = (0, 0, 0)
+* PicoBot calculates its new updated pose = (x, y, angle) every time it receives a driving command
+    * As acknowledgement of receipt of command, robot returns its current pose
