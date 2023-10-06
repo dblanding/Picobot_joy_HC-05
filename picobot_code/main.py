@@ -84,9 +84,9 @@ while True:
 
             # get current pose
             pose = odom.update(enc_a_val, enc_b_val)
-            pose_x, pose_y, pose_angle = pose
-            pose_ang_deg = pose_angle * 180 / math.pi
-            pose_deg = (pose_x, pose_y, pose_ang_deg)  # for display
+            # pose_x, pose_y, pose_angle = pose
+            # pose_ang_deg = pose_angle * 180 / math.pi
+            # pose_deg = (pose_x, pose_y, pose_ang_deg)  # for display
             
             # process BT command
             try:
@@ -103,9 +103,8 @@ while True:
             motors.drive_motors(lin_spd, ang_spd)
 
             # send pose data to signal request for next drive command
-            pose_msg = ', '.join((str(pose_x), str(pose_y), str(pose_ang_deg)))
-            print(str(pose))
-            uart0.write(str(pose) + "\n")
+            str_pose = ', '.join(str(n) for n in pose)
+            uart0.write(str_pose + "\n")
             
         led.toggle()
 

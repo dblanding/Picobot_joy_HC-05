@@ -37,3 +37,4 @@
 * Starting from its **Home** position: pose = (0, 0, 0)
 * PicoBot calculates its new updated pose = (x, y, angle) every time it receives a driving command
     * As acknowledgement of receipt of command, robot returns its current pose
+    * Driver station receives current pose and sends another pair of joystick values
