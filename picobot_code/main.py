@@ -12,12 +12,13 @@ MicroPython code for Pico car project using:
 import encoder_rp2 as encoder
 import gc
 import math
-from machine import UART, Pin, PWM 
+from machine import I2C, Pin, PWM, UART
 from time import sleep
 import motors
 from odometer import Odometer
 from parameters import TICKS_PER_METER, TARGET_TICK_RATE, TURN_SPD, ANGLE_TOL
 from bno08x_rvc import BNO08x_RVC
+import VL53L0X
 
 # setup encoders
 enc_b = encoder.Encoder(0, Pin(14))
@@ -29,6 +30,26 @@ led = machine.Pin("LED", machine.Pin.OUT)
 # set up uart for BT communication
 uart0 = UART(0, 9600, timeout=100)
 uart0.write("Hello from HC-05\n")
+
+# set up left & right VCSEL TOF distance sensors
+def setup_tof_sensor(bus_id, sda_pin, scl_pin):
+    """Setup a Vcsel sensor on an I2C bus.
+    There are two available busses: 0 & 1.
+    Return VL53L0X object."""
+    sda = Pin(sda_pin)
+    scl = Pin(scl_pin)
+
+    print("setting up i2c%s" % bus_id)
+    i2c = I2C(id=bus_id, sda=sda, scl=scl)
+    print("Set up device %s on i2c%s" % (i2c.scan(), bus_id))
+
+    return VL53L0X.VL53L0X(i2c)
+
+
+tof0 = setup_tof_sensor(0, 8, 9)  # Left
+tof0.start()
+tof1 = setup_tof_sensor(1, 10, 11)  # Right
+tof1.start()
 
 """
 # set up uart for IMU communication
@@ -74,6 +95,11 @@ while True:
     # slow loop
     if count == 0:
         count = N
+
+        dist0 = tof0.read()
+        dist1 = tof1.read()
+        print("left, right = ", dist0, dist1)
+
         if uart0.any() > 0:
             # get Bluetooth command
             linein = uart0.readline().decode().strip()
@@ -87,7 +113,7 @@ while True:
             # pose_x, pose_y, pose_angle = pose
             # pose_ang_deg = pose_angle * 180 / math.pi
             # pose_deg = (pose_x, pose_y, pose_ang_deg)  # for display
-            
+
             # process BT command
             try:
                 str_x, str_y = linein.split(',')
