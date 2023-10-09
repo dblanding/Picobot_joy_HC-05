@@ -96,6 +96,7 @@ while True:
     if count == 0:
         count = N
 
+        # read distances from sensors
         dist0 = tof0.read()
         dist1 = tof1.read()
         print("left, right = ", dist0, dist1)
@@ -110,9 +111,6 @@ while True:
 
             # get current pose
             pose = odom.update(enc_a_val, enc_b_val)
-            # pose_x, pose_y, pose_angle = pose
-            # pose_ang_deg = pose_angle * 180 / math.pi
-            # pose_deg = (pose_x, pose_y, pose_ang_deg)  # for display
 
             # process BT command
             try:
@@ -128,9 +126,13 @@ while True:
             # send commands to motors
             motors.drive_motors(lin_spd, ang_spd)
 
-            # send pose data to signal request for next drive command
-            str_pose = ', '.join(str(n) for n in pose)
-            uart0.write(str_pose + "\n")
+            # send pose + dist data to driver station
+            # This will signal request for next drive command
+            pose_data = list(pose)
+            dist_data = [dist0, dist1]
+            data = pose_data + dist_data
+            str_data = ', '.join(str(n) for n in data)
+            uart0.write(str_data + "\n")
             
         led.toggle()
 
