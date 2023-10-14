@@ -25,15 +25,15 @@
 
 ![Robot](imgs/picobot.jpg)
 
-### And here's the controller: A cheapo 2-axis joystick attached to the top of the box it came in:
+### And here's the controller: A cheap 2-axis joystick attached to the top of the box it came in:
 
 ![Joystick Controller](imgs/controller.jpg)
 ![Inside Controller box](imgs/controller-open.jpg)
 
-## Next, add Odometry: Use wheel encoder data to calculate current pose (x, y, angle)
+## Next, add Odometry: Use wheel encoder data to calculate current pose
 * Starting from its **Home** position at pose = (0, 0, 0)
-* Robot calculates its new updated pose = (x, y, angle) every time it receives a driving command from the controller.
-    * As acknowledgement of receipt of command, robot returns its current pose
+* Robot calculates its new updated pose every time it receives a driving command from the controller.
+    * As acknowledgement of receipt of joystick values, robot returns its current pose (x, y, theta) to the controller.
     * Controller receives current pose and sends another pair of joystick values
 
 ## Use a better joystick
@@ -45,4 +45,10 @@
     * It really is **a joy to use**. (Get it? ;-) )
 
 ![Big Joystick Controller](imgs/big_js_controller.jpg)
+
+## Add Left & Right distance sensors
+* Two VL53L0x distance sensors added, allowing PicoBot to *see* (up to ~1 meter) left and right
+* Left & Right distance values appended to pose message sent to controller
+* Controller saves data to file
+![Robot with 2 VCSEL sensors](imgs/picobot_with_dist_sensors.jpg)
 

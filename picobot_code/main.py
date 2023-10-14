@@ -133,7 +133,7 @@ while True:
             data = pose_data + dist_data
             str_data = ', '.join(str(n) for n in data)
             uart0.write(str_data + "\n")
-            
+
         led.toggle()
 
     count -= 1
