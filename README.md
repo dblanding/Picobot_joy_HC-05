@@ -46,9 +46,11 @@
 
 ![Big Joystick Controller](imgs/big_js_controller.jpg)
 
-## Add Left & Right distance sensors
+## Add Left & Right distance sensors and IMU
 * Two VL53L0x distance sensors added, allowing PicoBot to *see* (up to ~1 meter) left and right
-* Left & Right distance values appended to pose message sent to controller
+    * Left & Right distance values appended to pose message sent to controller
+* BNO08x IMU yaw data used to provide a "second opinion" about robot's current heading
+    * Yaw value (degrees) is converted to radians and appended to data message
 * Controller saves data to file
-![Robot with 2 VCSEL sensors](imgs/picobot_with_dist_sensors.jpg)
+![Robot with 2 VCSEL sensors](imgs/picobot_with_dist_sensors_imu.jpg)
 

@@ -6,7 +6,9 @@ MicroPython code for Pico car project using:
 * 56:1 gear motors with encoders
 * TeleOp control from driver station via HC-05 /06 BT 
 * Odometer keeps track of pose (x, y, angle)
-* Sends pose data back to driver station
+* Two VL53L0X devices measure left & right distance
+* BNO08X IMU reports yaw w/r/t starting value (0)
+* Send data (pose, l & r dist, yaw) back to controller
 """
 
 import encoder_rp2 as encoder
@@ -51,14 +53,12 @@ tof0.start()
 tof1 = setup_tof_sensor(1, 10, 11)  # Right
 tof1.start()
 
-"""
 # set up uart for IMU communication
 uart1 = UART(1, baudrate=115200, tx=Pin(4), rx=Pin(5))
 uart1.init(rxbuf=2048)
 print(uart1)
 rvc = BNO08x_RVC(uart1)
 sleep(2) # wait for IMU to settle
-"""
 
 def joy_to_speed(joy_val):
     """
@@ -82,16 +82,18 @@ N = 10  # number of 'fast' loop cycles per 'slow' loop
 count = N
 odom = Odometer()
 while True:
-    """
+
     # get IMU data every time through loop
     try:
-        yaw, *rest = rvc.heading
+        yaw_degrees, *rest = rvc.heading
+        # convert from degrees to radians
+        yaw = yaw_degrees * math.pi / 180 
         if yaw != yaw_prev:
             yaw_prev = yaw
     except Exception as e:
         print(e)
         yaw = yaw_prev
-    """
+
     # slow loop
     if count == 0:
         count = N
@@ -99,7 +101,7 @@ while True:
         # read distances from sensors
         dist0 = tof0.read()
         dist1 = tof1.read()
-        print("left, right = ", dist0, dist1)
+        # print("left, right = ", dist0, dist1)
 
         if uart0.any() > 0:
             # get Bluetooth command
@@ -126,11 +128,12 @@ while True:
             # send commands to motors
             motors.drive_motors(lin_spd, ang_spd)
 
-            # send pose + dist data to driver station
+            # send data to controller
             # This will signal request for next drive command
             pose_data = list(pose)
             dist_data = [dist0, dist1]
             data = pose_data + dist_data
+            data.append(yaw)
             str_data = ', '.join(str(n) for n in data)
             uart0.write(str_data + "\n")
 
