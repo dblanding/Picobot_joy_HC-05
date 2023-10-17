@@ -1,4 +1,4 @@
-# driver_station.py
+# driver_station (controller)
 
 from machine import ADC, Pin, UART
 import os
@@ -13,8 +13,7 @@ y_joy = ADC(Pin(27))
 def rotate_logs():
     # rotate logs and log current data
     filenames = os.listdir()
-    if 'log2.txt' in filenames:
-        os.rename('log2.txt', 'log3.txt')
+    print(filenames)
     if 'log1.txt' in filenames:
         os.rename('log1.txt', 'log2.txt')
     if 'log0.txt' in filenames:
@@ -24,13 +23,13 @@ def rotate_logs():
 # Start a new file for data
 prev_data = ''
 with open("data.txt", "w") as myfile:
-            myfile.write(prev_data)
+    myfile.write(prev_data)
 
 # initial values associated with saving & logging data
-LOG_WAIT_COUNT = 20
+LOG_WAIT_COUNT = 20  # Trigger after 2s inactivity
 robot_alive = False
 logs_rotated = True
-log_wait_counter = 0
+wait_counter = 0
 
 while True:
     x_val = x_joy.read_u16()
@@ -58,16 +57,23 @@ while True:
 
     elif robot_alive:
         # start counter when no data received from robot
-        log_wait_counter = 0
+        wait_counter = 0
         robot_alive = False
+        print("robot_alive")
 
-    elif not logs_rotated:
-        # increment counter (wait patiently)
-        log_wait_counter += 1
-
-    elif log_wait_counter == LOG_WAIT_COUNT:
+    elif wait_counter == LOG_WAIT_COUNT:
         # Time's up! Log data and rotate logs.
         rotate_logs()
         logs_rotated = True
+        wait_counter = 0
+        print("logs rotated")
+
+    elif not logs_rotated:
+        # increment counter (keep waiting)
+        wait_counter += 1
+        print("wait_counter = ", wait_counter)
+
+    else:
+        print("waiting")
 
     sleep(0.1)
