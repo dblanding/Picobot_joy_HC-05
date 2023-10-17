@@ -87,7 +87,7 @@ while True:
     try:
         yaw_degrees, *rest = rvc.heading
         # convert from degrees to radians
-        yaw = yaw_degrees * math.pi / 180 
+        yaw = -yaw_degrees * math.pi / 180 
         if yaw != yaw_prev:
             yaw_prev = yaw
     except Exception as e:

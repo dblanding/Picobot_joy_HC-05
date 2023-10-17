@@ -46,6 +46,12 @@ class Odometer():
 
         # update pose angle
         self.ang += delta_ang
+        
+        # keep theta between -pi and +pi
+        if self.ang < -math.pi:
+            self.ang += math.pi * 2
+        if self.ang > math.pi:
+            self.ang -= math.pi * 2
 
         return (self.x, self.y, self.ang)
 
