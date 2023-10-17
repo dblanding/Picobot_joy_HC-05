@@ -1,4 +1,19 @@
 # driver_station (controller)
+"""
+Controller (this code) sends joystick values to robot.
+It will wait patiently until robot is turned on.
+
+Once it is turned on, the robot will respond to received values
+by sending a comma-separated list of data (pose, dist, yaw).
+
+The controller saves the data, then sends more joystick values.
+
+This continues as long as the robot is powered.
+
+To save the data to file, turn the robot off.
+Once the robot is switched off, the controller will wait 2s,
+then rotate the logs and store current data as log0.txt
+"""
 
 from machine import ADC, Pin, UART
 import os
@@ -18,15 +33,17 @@ def rotate_logs():
         os.rename('log1.txt', 'log2.txt')
     if 'log0.txt' in filenames:
         os.rename('log0.txt', 'log1.txt')
-    os.rename('data.txt', 'log0.txt')
+    with open('log0.txt', 'w') as f:
+        for line in datalist:
+            f.write(line)
 
-# Start a new file for data
+# Create a list for data
+datalist = []
 prev_data = ''
-with open("data.txt", "w") as myfile:
-    myfile.write(prev_data)
 
 # initial values associated with saving & logging data
-LOG_WAIT_COUNT = 20  # Trigger after 2s inactivity
+
+LOG_WAIT_COUNT = 20  # Trigger logging after 2s nonresponse from robot
 robot_alive = False
 logs_rotated = True
 wait_counter = 0
@@ -48,8 +65,7 @@ while True:
         # append line of data to file
         if not str_data == prev_data:
             prev_data = str_data
-            with open("data.txt", "a") as myfile:
-                myfile.write(str_data)
+            datalist.append(str_data)
 
         # Send joy_vals to robot
         joy_vals += '\n'

@@ -6,7 +6,7 @@
     * Once the acknowledgement message was received back, another comma separted string is sent.
 
 * The goal here is to do the same thing, except using Picos instead of Arduinos
-    * The driver station would use a 2 axis joystick (instead of 3)
+    * The driver station controller would use a 2 axis joystick (instead of 3)
     * The comma separated values would represent x and y joystick position (instead of 4 motor speeds)
         * Conversion from joystick value to motor speed would be done on the robot
 * Here are the two Thonny sessions with both Picos communicating with each other:
