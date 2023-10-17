@@ -1,7 +1,7 @@
 # parameters.py
 
 # car geometry
-TRACK_WIDTH = 0.1778  # meters (7 inches)
+TRACK_WIDTH = 0.1817  # meters
 WHEEL_CIRC = 0.214  # meters
 
 # encoder / gearbox
