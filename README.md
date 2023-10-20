@@ -54,3 +54,22 @@
 * Controller saves data to file
 ![Robot with 2 VCSEL sensors](imgs/picobot_with_dist_sensors_imu.jpg)
 
+## How does it all work, in practice?
+* In operation, the joystick enables the robot to be driven around a room while collecting the data sent back from the robot. Once the run is complete, the driver pushes a button on the controller, which causes the data to be saved to a log file whose name is timestamped.
+* In order to get the Pico's RTC set correctly to localtime, it needs to be hooked up to Thonny.
+* The problem with the timestamp is that when the pico is battery powered, it sets the date and time to midnight on 2021/01/01.
+* So, how to get the correct date and time from Thonny while not having to be tethered to the laptop when driving the robot around the room?
+
+## Dual-power
+* A USB to TTL adapter allows the +5V from the power cell to be connected to the Pico's Vsys Pin
+
+![Controller with button and dual power options](imgs/controller-button.jpg)
+* Here is the sequence:
+    1. Connect the Pico's Vsys pin (and ground) to the power cell
+    2. Connect the Pico to the laptop using the USB cable, start Thonny then start main.py
+    3. Unplug the USB cable from the laptop - Now the controller is free of the laptop with its RTC correctly set to localtime and with its main.py running...
+    4. Drive the robot around the room
+        * When the run is complete, push the blue button save the datafile to a timestamped log.
+        * The controller can be turned off by unplugging the power cell.
+    5. The data can be retrieved any time by connecting the controller to Thonny.
+
